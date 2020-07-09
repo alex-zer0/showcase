@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Redirect, Route, Router, Switch } from 'react-router-dom'
+import { NAV } from './nav'
+import history from './utils/history'
+import NotFound from './views/NotFound'
+import PageHeader from './components/Header'
+import PageFooter from './components/Footer'
+import Coloring from './views/coloring/Coloring'
+import ColoringDetails from './views/coloring-details/ColoringDetails'
+import styled from '@emotion/styled'
+import { size, layout, LayoutSize } from './styles/variables'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const Layout = styled.section`
+  height: 100vh;
+  & > main {
+    height: calc(100% - ${size.header} - ${size.footer});
+    overflow: auto;
+    max-width: ${layout[LayoutSize.LAPTOP]}px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+`
 
-export default App;
+const App: React.FC = () => (
+  <Layout>
+    <Router history={history}>
+      <PageHeader/>
+      <main>
+        <Switch>
+          <Route exact path="/">
+            <Redirect to={NAV.Coloring.Index}/>
+          </Route>
+          <Route path={NAV.Coloring.Index} component={Coloring} exact/>
+          <Route path={NAV.Coloring.Details} component={ColoringDetails}/>
+          <Route component={NotFound}/>
+        </Switch>
+      </main>
+      <PageFooter/>
+    </Router>
+  </Layout>
+)
+
+export default App
